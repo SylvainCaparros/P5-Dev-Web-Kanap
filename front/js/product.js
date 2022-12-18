@@ -1,7 +1,6 @@
 let url = document.location.href
 let idurl = new URL(url)
 let id = idurl.searchParams.get("id")
-console.log(id)
 
 fetch(`http://localhost:3000/api/products/${id}`)
     //Récupère les valeurs de l'API et les retournent en json
@@ -45,11 +44,44 @@ fetch(`http://localhost:3000/api/products/${id}`)
                 }
             }
             
-
-            
-
+            let bouton = document
+                    .getElementById("addToCart")
+                    .addEventListener("click", () => {
+                        const quantity = document.getElementById("quantity").value
+                        const colorSelected = document.getElementById("colors").options[document.getElementById("colors").selectedIndex].text
+                        console.log(colorSelected)
+                        
+                        if ((quantity < 1 || quantity > 100) || (colorSelected == "--SVP, choisissez une couleur --")) {
+                            alert("error")
+                        }
+                        else {
+                            //Ajouter le produit selectionné dans le local storage
+                            let cart = localStorage.getItem("cart")
+                            //Création de mon objet cart
+                            //si local storage vide création d'un panier vide
+                            if (cart == null) {
+                                cart = {}
+                            }
+                            //si local storage n'est pas vide, récupération de l'ancien panier
+                            else {
+                                cart = JSON.parse(cart)
+                            }
+                            //si l'objet n'existe pas dans mon panier je le créer
+                            let key = id + "-" + colorSelected
+                            if (cart[key] == undefined) {
+                                let myItemInfo = { itemId : id, itemQty : parseInt(quantity), itemColor : colorSelected }
+                                cart[key] = myItemInfo
+                            }
+                            //si il existe j'ajoute la quantité à celle existante
+                            else {
+                                cart[key].itemQty += parseInt(quantity)
+                            }
+                            //sauvegarde de mon panier dans mon local storage
+                            localStorage.setItem("cart", JSON.stringify(cart))
+                        }
+                    })
     })
     //Retourne une erreur dans la console
     .catch((error) => {
         console.log(error)
-    }) 
+    })
