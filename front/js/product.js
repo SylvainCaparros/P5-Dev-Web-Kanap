@@ -55,11 +55,11 @@ fetch(`http://localhost:3000/api/products/${id}`)
                             alert("error")
                         }
                         else {
-                            //Ajouter le produit selectionné dans le local storage
+                            //Récupérer ma donnée du local storage
                             let cart = localStorage.getItem("cart")
                             //Création de mon objet cart
                             //si local storage vide création d'un panier vide
-                            if (cart == null) {
+                            if (cart === null) {
                                 cart = {}
                             }
                             //si local storage n'est pas vide, récupération de l'ancien panier
@@ -68,7 +68,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
                             }
                             //si l'objet n'existe pas dans mon panier je le créer
                             let key = id + "-" + colorSelected
-                            if (cart[key] == undefined) {
+                            if (cart[key] === undefined) {
                                 let myItemInfo = { itemId : id, itemQty : parseInt(quantity), itemColor : colorSelected }
                                 cart[key] = myItemInfo
                             }
