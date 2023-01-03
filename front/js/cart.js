@@ -1,22 +1,10 @@
 let canapesAll = []
 
-function addEventBtnSupp(ls) {
-        const buttonsSelect = document.getElementsByClassName("deleteItem")
-            Array.from(buttonsSelect).forEach((button) => {
-                button.addEventListener("click", (e) => {
-                    let id = e.target.closest("article").getAttribute("data-id")
-                    let color = e.target.closest("article").getAttribute("data-color")
-                    
-                    let key = id + "-" + color
-                        if (ls[key] !== undefined) {
-                            delete ls.key
-                        }
-                })
-            });
-}
-
-
-fetch("http://localhost:3000/api/products")
+function setPanier() {
+    document
+        .getElementById("cart__items")
+        .innerHTML = ``
+    fetch("http://localhost:3000/api/products")
     //Récupère les valeurs de l'API et les retournent en json
     .then((res) => res.json())
     //Retourne les canapés
@@ -54,11 +42,52 @@ fetch("http://localhost:3000/api/products")
                             </article>`
         }
         addEventBtnSupp(cartParsed)
-
-        
+        modification(cartParsed)
+        calcul(cartParsed)
         
     })
     //Retourne une erreur dans la console
     .catch((error) => {
         console.log(error)
     })
+}
+
+function addEventBtnSupp(ls) {
+    const buttonsSelect = document.getElementsByClassName("deleteItem")
+        Array.from(buttonsSelect).forEach((button) => {
+            button.addEventListener("click", (e) => {
+                let id = e.target.closest("article").getAttribute("data-id")
+                let color = e.target.closest("article").getAttribute("data-color")
+                const key = id + "-" + color
+                    if (ls[key] !== undefined) {
+                        delete ls[key]
+                        localStorage.setItem("cart", JSON.stringify(ls))
+                        setPanier()
+                    }
+            })
+        })
+}
+
+function modification (ls) {
+    const buttonsSelect = document.getElementsByClassName("itemQuantity")
+    Array.from(buttonsSelect).forEach((button) => {
+        button.addEventListener("change", (e) => {
+            let id = e.target.closest("article").getAttribute("data-id")
+            let color = e.target.closest("article").getAttribute("data-color")
+            const key = id + "-" + color
+            if (ls[key] !== undefined) {
+                ls[key].itemQty = parseInt(button.value)
+            }
+            localStorage.setItem("cart", JSON.stringify(ls))
+        })
+    })
+}
+
+function calcul (ls) {
+    canapesAll.forEach(element => {
+        
+    })
+    console.log(canapesAll)
+}
+
+setPanier()
