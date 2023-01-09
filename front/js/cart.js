@@ -39,9 +39,7 @@ function setPanier() {
                                     </div>
                                 </div>
                                 </div>
-                            </article>`
-
-                            
+                            </article>`           
         }
         addEventBtnSupp(cartParsed)
         modification(cartParsed)
@@ -112,6 +110,7 @@ function formulaire() {
     const formulaires = document.getElementsByClassName("cart__order__form")
     Array.from(formulaires).forEach((formulaire) => {
         formulaire.addEventListener("submit", (e) => {
+            e.preventDefault()
             //Validation regex firstname
             const champsFirstName = document.getElementById("firstName")
             const regex1 = /^[a-zA-Z\- ]{3,20}$/
@@ -122,7 +121,6 @@ function formulaire() {
             else {
                 document.getElementById("firstNameErrorMsg")
                     .innerText = 'Prenom non conforme'
-                e.preventDefault()
             }
             //Validation regex lastname
             const champsLastName = document.getElementById("lastName")
@@ -133,7 +131,6 @@ function formulaire() {
             else {
                 document.getElementById("lastNameErrorMsg")
                     .innerText = 'Nom non conforme'
-                e.preventDefault()
             }
             //Validation regex adresse
             const champsAdresse = document.getElementById("address")
@@ -145,7 +142,6 @@ function formulaire() {
             else {
                 document.getElementById("addressErrorMsg")
                     .innerText = 'Adresse non conforme'
-                e.preventDefault()
             }
             //Validation regex ville
             const champsVille = document.getElementById("city")
@@ -156,7 +152,6 @@ function formulaire() {
             else {
                 document.getElementById("cityErrorMsg")
                     .innerText = 'Ville non conforme'
-                e.preventDefault()
             }
             //Validation regex email
             const champsEmail = document.getElementById("email")
@@ -168,31 +163,47 @@ function formulaire() {
             else {
                 document.getElementById("emailErrorMsg")
                     .innerText = 'Email non conforme'
-                e.preventDefault()
+            }
+            if (regex1.exec(champsFirstName.value) 
+            && regex1.exec(champsLastName.value) 
+            && regex2.exec(champsAdresse.value) 
+            && regex1.exec(champsVille.value) 
+            && regex3.exec(champsEmail.value)) {
+                let contact = {
+                    firstName: champsFirstName.value,
+                    lastName: champsLastName.value,
+                    address: champsAdresse.value,
+                    city: champsVille.value,
+                    email: champsEmail.value
+                }
+                submit(contact)
             }
         })
     })
 }
 formulaire()
 
-
-let products = {}
-
-
-async function postData(url = '', data = {contact, products}) {
-    const response = await fetch(url, {
-        method: 'POST',
-        header: {
-            'Content-Type': ''
-        },
-        body: JSON.stringify(data)
-    })
-    return response.json()
+function submit(contact) {
+    let cart = localStorage.getItem("cart")
+    let cartParsed = JSON.parse(cart)
+    let products = []
+    for (const key in cartParsed) {
+        products.push(cartParsed[key].itemId)
+    }
+    fetch("http://localhost:3000/api/products/order", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({contact, products})
+             })
+        .then((res) => res.json())
+        .then(function(order) {
+            console.log(order)
+            window.location = `confirmation.html?orderId=${order.orderId}`;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 }
-
-postData('', {})
-    .then((data) => {
-        console.log(data)
-    })
-
-console.log(canapesAll)
