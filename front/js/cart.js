@@ -40,6 +40,8 @@ function setPanier() {
                                 </div>
                                 </div>
                             </article>`
+
+                            
         }
         addEventBtnSupp(cartParsed)
         modification(cartParsed)
@@ -66,6 +68,7 @@ function addEventBtnSupp(ls) {
                     }
             })
         })
+    calcul(ls)
 }
 
 function modification (ls) {
@@ -79,15 +82,117 @@ function modification (ls) {
                 ls[key].itemQty = parseInt(button.value)
             }
             localStorage.setItem("cart", JSON.stringify(ls))
+            calcul(ls)
         })
     })
 }
 
 function calcul (ls) {
-    canapesAll.forEach(element => {
-        
+    let price = 0
+    let nombreCanapes = 0
+    canapesAll.forEach(canape => {
+        for (const canapeLs in ls) {
+            if(ls[canapeLs].itemId == canape._id) {
+                price += canape.price * ls[canapeLs].itemQty
+                nombreCanapes += ls[canapeLs].itemQty
+            }
+        }
     })
-    console.log(canapesAll)
+    document
+        .getElementById("totalQuantity")
+        .innerText = nombreCanapes
+    document
+        .getElementById("totalPrice")
+        .innerText = price
 }
 
 setPanier()
+
+function formulaire() {
+    const formulaires = document.getElementsByClassName("cart__order__form")
+    Array.from(formulaires).forEach((formulaire) => {
+        formulaire.addEventListener("submit", (e) => {
+            //Validation regex firstname
+            const champsFirstName = document.getElementById("firstName")
+            const regex1 = /^[a-zA-Z\- ]{3,20}$/
+            if (regex1.exec(champsFirstName.value)) {
+                document.getElementById("firstNameErrorMsg")
+                    .innerText = ''
+            }
+            else {
+                document.getElementById("firstNameErrorMsg")
+                    .innerText = 'Prenom non conforme'
+                e.preventDefault()
+            }
+            //Validation regex lastname
+            const champsLastName = document.getElementById("lastName")
+            if (regex1.exec(champsLastName.value)) {
+                document.getElementById("lastNameErrorMsg")
+                    .innerText = ''
+            }
+            else {
+                document.getElementById("lastNameErrorMsg")
+                    .innerText = 'Nom non conforme'
+                e.preventDefault()
+            }
+            //Validation regex adresse
+            const champsAdresse = document.getElementById("address")
+            const regex2 = /^[a-zA-Z\- 0-9]{3,100}$/
+            if (regex2.exec(champsAdresse.value)) {
+                document.getElementById("addressErrorMsg")
+                    .innerText = ''
+            }
+            else {
+                document.getElementById("addressErrorMsg")
+                    .innerText = 'Adresse non conforme'
+                e.preventDefault()
+            }
+            //Validation regex ville
+            const champsVille = document.getElementById("city")
+            if (regex1.exec(champsVille.value)) {
+                document.getElementById("cityErrorMsg")
+                    .innerText = ''
+            }
+            else {
+                document.getElementById("cityErrorMsg")
+                    .innerText = 'Ville non conforme'
+                e.preventDefault()
+            }
+            //Validation regex email
+            const champsEmail = document.getElementById("email")
+            const regex3 = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+            if (regex3.exec(champsEmail.value)) {
+                document.getElementById("emailErrorMsg")
+                    .innerText = ''
+            }
+            else {
+                document.getElementById("emailErrorMsg")
+                    .innerText = 'Email non conforme'
+                e.preventDefault()
+            }
+        })
+    })
+}
+formulaire()
+
+
+let products = {}
+
+
+async function postData(url = '', data = {contact, products}) {
+    const response = await fetch(url, {
+        method: 'POST',
+        header: {
+            'Content-Type': ''
+        },
+        body: JSON.stringify(data)
+    })
+    return response.json()
+}
+
+postData('', {})
+    .then((data) => {
+        console.log(data)
+    })
+
+console.log(canapesAll)
