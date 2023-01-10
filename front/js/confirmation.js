@@ -1,3 +1,6 @@
 let url = document.location.href
 let idurl = new URL(url)
-let id = idurl.searchParams.get("id")
+let orderId = idurl.searchParams.get("orderId")
+
+document.getElementById("orderId")
+    .innerText = orderId
