@@ -201,6 +201,7 @@ function submit(contact) {
         .then((res) => res.json())
         .then(function(order) {
             console.log(order)
+            localStorage.clear()
             window.location = `confirmation.html?orderId=${order.orderId}`;
         })
         .catch((error) => {
