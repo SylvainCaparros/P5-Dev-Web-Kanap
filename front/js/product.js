@@ -52,7 +52,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
                         console.log(colorSelected)
                         
                         if ((quantity < 1 || quantity > 100) || (colorSelected == "--SVP, choisissez une couleur --")) {
-                            alert("error")
+                            alert("Choisissez une quantité comprise entre 1 et 100 et selectionnez une couleur")
                         }
                         else {
                             //Récupérer ma donnée du local storage
@@ -74,10 +74,16 @@ fetch(`http://localhost:3000/api/products/${id}`)
                             }
                             //si il existe j'ajoute la quantité à celle existante
                             else {
-                                cart[key].itemQty += parseInt(quantity)
+                                if ((cart[key].itemQty + parseInt(quantity)) > 100) {
+                                    alert(`Vous ne pouvez pas avoir plus de 100 exemplaires du même produit dans votre panier et vous en avez déjà ${cart[key].itemQty}`)
+                                }
+                                else {
+                                    cart[key].itemQty += parseInt(quantity)
+                                }
                             }
                             //sauvegarde de mon panier dans mon local storage
                             localStorage.setItem("cart", JSON.stringify(cart))
+                            alert(`${canape.name} a bien été ajouté à votre panier`)
                         }
                     })
     })
