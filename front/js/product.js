@@ -71,6 +71,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
                             if (cart[key] === undefined) {
                                 let myItemInfo = { itemId : id, itemQty : parseInt(quantity), itemColor : colorSelected }
                                 cart[key] = myItemInfo
+                                alert(`${canape.name} a bien été ajouté à votre panier`)
                             }
                             //si il existe j'ajoute la quantité à celle existante
                             else {
@@ -79,11 +80,11 @@ fetch(`http://localhost:3000/api/products/${id}`)
                                 }
                                 else {
                                     cart[key].itemQty += parseInt(quantity)
+                                    alert(`${canape.name} a bien été ajouté à votre panier`)
                                 }
                             }
                             //sauvegarde de mon panier dans mon local storage
                             localStorage.setItem("cart", JSON.stringify(cart))
-                            alert(`${canape.name} a bien été ajouté à votre panier`)
                         }
                     })
     })
